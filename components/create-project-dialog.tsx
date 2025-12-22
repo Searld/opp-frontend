@@ -230,41 +230,6 @@ export function CreateProjectDialog({ open, onOpenChange, currentUserId, onProje
               <Input id="deadline" type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} required />
             </div>
 
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Участники проекта (приглашение по email)</Label>
-              <div className="flex gap-2">
-                <Input
-                    id="email"
-                    type="email"
-                    value={emailInput}
-                    onChange={(e) => setEmailInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault()
-                        handleAddEmail()
-                      }
-                    }}
-                    placeholder="Введите email участника"
-                />
-                <Button type="button" onClick={handleAddEmail} variant="outline">
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              {emails.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {emails.map((email) => (
-                        <div key={email} className="flex items-center gap-2 px-3 py-1 bg-secondary rounded-full text-sm">
-                          <span>{email}</span>
-                          <button type="button" onClick={() => handleRemoveEmail(email)} className="hover:text-destructive">
-                            <X className="h-3 w-3" />
-                          </button>
-                        </div>
-                    ))}
-                  </div>
-              )}
-            </div>
-
             <div className="flex gap-2 justify-end">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
                 Отмена
