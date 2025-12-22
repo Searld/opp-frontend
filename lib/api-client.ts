@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://45.153.69.118:5000"
 
 // Type definitions matching C# DTOs
 export interface ProjectTaskDto {
