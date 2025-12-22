@@ -135,45 +135,6 @@ export function CreateTaskDialog({
             </p>
           </div>
 
-          {!parentTaskId && (
-            <div className="space-y-2">
-              <Label htmlFor="subtask">Подзадачи (опционально)</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="subtask"
-                  value={subtaskInput}
-                  onChange={(e) => setSubtaskInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault()
-                      handleAddSubtask()
-                    }
-                  }}
-                  placeholder="Введите название подзадачи"
-                />
-                <Button type="button" onClick={handleAddSubtask} variant="outline">
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              {subtasks.length > 0 && (
-                <div className="space-y-2 mt-3">
-                  {subtasks.map((subtask, index) => (
-                    <div key={index} className="flex items-center justify-between px-3 py-2 bg-secondary rounded-lg">
-                      <span className="text-sm">{subtask}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveSubtask(index)}
-                        className="hover:text-destructive"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
           <div className="flex gap-2 justify-end">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Отмена

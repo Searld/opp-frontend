@@ -103,6 +103,13 @@ class ApiClient {
         })
     }
 
+    async deleteStudentFromProject(data: { projectId: string; studentId: string }): Promise<void> {
+        return this.request("/api/students/delete", {
+            method: "DELETE",
+            body: JSON.stringify(data),
+        })
+    }
+
     async getCurrentStudent(): Promise<StudentDto> {
         return this.request("/api/students/me", {
             method: "GET",

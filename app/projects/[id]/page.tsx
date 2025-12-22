@@ -328,6 +328,51 @@ function ProjectPageContent({projectId} : { projectId: string }) {
     })
   }
 
+
+  // Добавьте функцию для удаления участника
+  const handleDeleteParticipant = async (studentId: string) => {
+    if (!project) return
+
+    // Подтверждение удаления
+    const participantName = getStudentName(studentId)
+    const confirmDelete = window.confirm(`Вы уверены, что хотите удалить участника "${participantName}" из проекта?`)
+
+    if (!confirmDelete) return
+
+    try {
+      // Отправляем запрос на удаление
+      await apiClient.deleteStudentFromProject({
+        projectId: project.id,
+        studentId: studentId
+      })
+
+      // Оптимистично обновляем UI
+      const updatedParticipants = project.participants.filter(id => id !== studentId)
+      setProject({
+        ...project,
+        participants: updatedParticipants
+      })
+
+      // Показываем уведомление об успехе
+      alert(`Участник "${participantName}" успешно удален из проекта`)
+
+    } catch (err) {
+      console.error("Failed to delete participant:", err)
+      alert("Не удалось удалить участника. Попробуйте снова.")
+
+      // В случае ошибки перезагружаем данные с сервера
+      try {
+        const projDto = await apiClient.getProject(projectId)
+        setProject(prev => prev ? {
+          ...prev,
+          participants: projDto.members || []
+        } : prev)
+      } catch (e) {
+        console.error("Failed to reload project after delete error:", e)
+      }
+    }
+  }
+
 // ====== Обновление задачи (вызывается из TaskDetailDialog) ======
   const handleTaskUpdated = async (updatedTask: Task) => {
     if (!project) return
@@ -596,11 +641,38 @@ function ProjectPageContent({projectId} : { projectId: string }) {
                   {project.participants
                       .filter(participantId => participantId !== project.owner)
                       .map((participantId) => (
-                          <div key={participantId} className="flex items-center gap-3 p-2 rounded hover:bg-muted/50">
-                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium">
-                              {getStudentName(participantId)[0].toUpperCase()}
+                          <div key={participantId} className="flex items-center justify-between gap-3 p-2 rounded hover:bg-muted/50 group">
+                            <div className="flex items-center gap-3 flex-1">
+                              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium">
+                                {getStudentName(participantId)[0].toUpperCase()}
+                              </div>
+                              <span className="text-sm">{getStudentName(participantId)}</span>
                             </div>
-                            <span className="text-sm">{getStudentName(participantId)}</span>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDeleteParticipant(participantId)}
+                                className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/20 hover:text-destructive"
+                                title="Удалить участника"
+                            >
+                              <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                              >
+                                <path d="M3 6h18" />
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                <line x1="10" y1="11" x2="10" y2="17" />
+                                <line x1="14" y1="11" x2="14" y2="17" />
+                              </svg>
+                            </Button>
                           </div>
                       ))}
                 </div>
